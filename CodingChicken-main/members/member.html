@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>멤버 소개</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #fff;
+            background-image: url("../image/MainPageCover.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover; 
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 48px;
+            text-shadow: -2px 0px #ecf1b7, 0px 2px #ecf1b7, 2px 0px #ecf1b7, 0px -2px #ecf1b7;
+            color: #343a40;
+
+            >img {
+                height: 48px;
+            }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        .title-section {
+            background-color: #ecf1b7; 
+            color: black; 
+            padding: 10px; 
+            border-top-left-radius: 10px; 
+            border-top-right-radius: 10px; 
+        }
+
+        .content-section {
+            padding: 23px; 
+            color: black; 
+        }
+
+        .btn-custom {
+            background-color: white;
+            color: black;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-custom:hover {
+            background-color: #e2e6ea;
+        }
+
+        .postingbox {
+            width: 40%;
+            max-height: 848px;
+            margin: 5px auto 20px 50px;
+            border: 1px solid lightgray;
+            padding: 20px;
+            border-radius: 5px;
+
+            .photobox {
+                width: 100%;
+                border-radius: 5px;
+                border: 1px solid lightgray;
+                margin: 5px auto 20px auto;
+            }
+
+            .fileupload {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 100px;
+
+                label {
+                    cursor: pointer;
+                    font-size: 2em;
+                }
+            }
+            #chooseFile {
+                visibility: hidden;
+            }
+        }
+
+        .postingbox>button {
+            width: 100%;
+            background-color: #343a40;
+            text-shadow: -1px 0px #ecf1b7, 0px 1px #ecf1b7, 1px 0px #ecf1b7, 0px -1px #ecf1b7;
+            color: #343a40;
+            /* 영역 끝까지 넓힌다는 의미 */
+        }
+
+        .membercards {
+            width: 65%;
+            margin: 5px 20px 20px 20px;
+        }
+
+        .card {
+            width: 90%;
+            height: 400px;
+            font-size: 14px;
+            line-height: 1;
+            background-color: khaki;
+
+            >img {
+                width: 80%;
+                height: 50%;
+                margin: 5px auto 0px auto;
+                border-radius: 5px;
+            }
+        }
+
+        .card-top {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: end;
+
+            >img {
+                height: 15px;
+                margin-right: 5px;
+                margin-top: 5px;
+            }    
+        }
+
+        .card-body {
+            >img {
+                width: 14px;
+                height: 14px;
+            }
+        }
+        .expandbtn{
+               background-image: url("./expand.png");
+               background-repeat: no-repeat;
+               background-position: center center;
+               background-size: cover; 
+               background-color: rgba(0, 0, 0, 0);
+               border: none;
+               width : 15px;
+               height: 15px;
+               margin-right : 2px;
+               margin-top : 2px;
+            }
+        .editbtn{
+               background-image: url("./edit.png");
+               background-repeat: no-repeat;
+               background-position: center center;
+               background-size: cover; 
+               background-color: rgba(0, 0, 0, 0);
+               border: none;
+               width : 15px;
+               height: 15px;
+               margin-right : 2px;
+               margin-top : 2px;
+            }
+        .deletebtn{
+                background-image: url("./delete.png");
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: cover; 
+                background-color: rgba(0, 0, 0, 0);
+                border: none;
+                width : 15px;
+                height: 15px;
+            }
+        hr {
+            margin-top: 0.4em;
+            margin-bottom: 0.4em;
+        }
+    </style>
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { collection, addDoc, setDoc, doc, updateDoc, deleteDoc  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // Firebase 구성 정보 설정
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyChB2cWVFFqMKbAeNth9OOfln9qsyoe-0c",
+            authDomain: "sparta-kwon.firebaseapp.com",
+            projectId: "sparta-kwon",
+            storageBucket: "sparta-kwon.appspot.com",
+            messagingSenderId: "205155757728",
+            appId: "1:205155757728:web:392eb31f61b51af5ad63c5",
+            measurementId: "G-2PYRVDC9G4"
+        };
+
+        // Firebase 인스턴스 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        //파이어베이스 수정/저장 처리
+        $("#postingbtn").click(async function () {
+            let docId = $('#docId').val();
+            let image = $('#image').val();
+            let name = $('#name').val();
+            let mbti = $('#mbti').val();
+            let merit = $('#merit').val();
+            let collabstyle = $('#collabstyle').val();
+            let feature = $('#feature').val(); 
+            let blogadr = $('#blogadr').val();
+            let gitadr = $('#gitadr').val();
+            let nutshell = $('#nutshell').val();
+            
+            let result = {
+                'image': image,
+                'name': name,
+                'mbti': mbti,
+                'merit': merit,
+                'collabstyle': collabstyle,
+                'feature':feature,
+                'blogadr': blogadr,
+                'gitadr':gitadr,
+                'nutshell':nutshell,
+            };
+ 
+            if(docId == null || docId == ""){
+                await addDoc(collection(db, "chickens"), result);
+            }else if(docId != null) {
+                const nweetTextRef = doc(db, "chickens", docId);
+                await updateDoc(nweetTextRef,  result);
+            }
+            alert('저장완료!');
+            window.location.reload();
+        });
+
+         //수정페이지 이동
+         $('#allcard').on('click', '.editbtn', async function () {
+            let col = $(this).closest('.col');
+            let memid = col.attr('id');
+            window.location.href = `./posting.html?id=${memid}`;
+        });
+
+         //상세페이지 이동
+         $('#allcard').on('click', '.expandbtn', async function () {
+            let col = $(this).closest('.col');
+            let memid = col.attr('id');
+            window.location.href = `memdetail.html?id=${memid}`;
+        });
+
+        //파이어베이스 삭제
+        $('#allcard').on('click', '.deletebtn', async function () {
+            if(confirm("정말로 맴버카드를 삭제하시겠습니까?")){
+                let col = $(this).closest('.col');
+                let id = col.attr('id');
+                await deleteDoc(doc(db, "chickens", id));
+                alert('삭제 완료!');
+                window.location.reload();
+            }else{
+                return;
+            }
+        });
+        
+        //맴버카드 정보 불러오기
+        let docs = await getDocs(collection(db, "chickens"));
+            docs.forEach((doc) => {
+            let row = doc.data();
+            let id = doc.id;
+            let image = row['image'];
+            let name = row['name'];
+            let mbti = row['mbti'];
+            let merit = row['merit'];
+            let feature = row['feature'];
+            let collabstyle = row['collabstyle'];
+            let blogadr = row['blogadr'];
+            let gitadr = row['gitadr'];
+            let nutshell = row['nutshell']; 
+            
+            
+            if(image == null || image == ""){
+                image = "./default.png";
+            }
+            let temp_html = `
+                   <div class="col" id="${id}">
+                    <div class="card" id="${id}">
+                        <div class="card-top"  id="${id}">
+                            </button>
+                            <button type="button" class="expandbtn">
+                            </button>
+                            <button type="button" class="editbtn">
+                            </button>
+                            <button type="button" class="deletebtn">
+                            </button>
+                        </div>
+                        <img src="${image}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <img src="egg.png" class="egg">
+                            <span class="card-text">이름: </span>
+                            <span class="card-text" id="name" value="${name}">${name}</span>
+                            <hr>
+                            <img src="egg.png" class="egg">
+                            <span class="card-text">MBTI : </span>
+                            <span class="card-text" id="mbti" >${mbti}</span>
+                            <hr>
+                        </div>
+                    </div>
+                </div>`;
+            $('#allcard').append(temp_html);
+        });
+
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="d-flex justify-content-between align-items-center">
+                <h1>코딩치킨</h1>
+            <div class="button-container">
+                <button type="button" onclick="location.href='../CodingChicken_TeamPage/CodingChicken_TeamPage.html'" class="btn btn-light">팀 소개</button>
+                <button type="button" onclick="location.href='./member.html'" class="btn btn-light">멤버 소개</button>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="postingbox">
+            <img src="../image/MainHomepage.png" alt="코딩치킨" class="img-fluid">
+            <button type="button" onclick="location.href='./posting.html?id=1'" 
+            class="btn btn-light me-2">맴버카드 등록하기</button>
+        </div>
+        <!-- 맴버카드 에어리어 -->
+        <div class="membercards">
+            <div id = "allcard" class="row row-cols-1 row-cols-md-4 g-4"></div>
+        </div>
+</body>
+
+</html>
